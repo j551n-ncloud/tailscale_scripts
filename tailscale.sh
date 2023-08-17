@@ -6,6 +6,8 @@ AUTH_KEY="tskey-auth-kuNbtx2CNTRL-9svk36a1gM7XHyMfLWzFN7qksbcTBzFs"
 # Subnet CIDR replace if it differs& put " ," for other cidr
 SUBNET_CIDR="192.168.0.0/24"
 
+
+
 #curl install
 sudo apt update
 sudo apt upgrade
@@ -28,7 +30,7 @@ sudo sysctl -p /etc/sysctl.conf
 sudo iptables -t nat -A POSTROUTING -s $SUBNET_CIDR ! -d $SUBNET_CIDR -o tailscale0 -j MASQUERADE
 
 # Start Tailscale as an exit node and subnet router
-sudo tailscale up --auth-key=$AUTH_KEY --accept-routes --advertise-exit-node --advertise-routes=$SUBNET_CIDR &
+sudo tailscale up --auth-key=$AUTH_KEY --accept-routes --advertise-exit-node=$SUBNET_CIDR &
 
 # Display Tailscale status
 sudo tailscale status
