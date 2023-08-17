@@ -37,3 +37,4 @@ sudo tailscale status
 
 # Keep the script running to maintain the Tailscale connection
 read -r -d '' _ </dev/tty
+
