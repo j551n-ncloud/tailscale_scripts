@@ -15,7 +15,7 @@ sudo apt install curl
 curl -fsSL https://tailscale.com/install.sh | sh
 
 # Authenticate Tailscale
-sudo tailscale up --authkey $AUTH_KEY
+
 
 # Enable IP forwarding and IPv6 forwarding
 echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.conf
