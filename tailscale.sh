@@ -1,18 +1,11 @@
 #!/bin/bash
 
-# Tailscale authentication key if key is invalid paste new one in
-AUTH_KEY="tskey-auth-kuNbtx2CNTRL-9svk36a1gM7XHyMfLWzFN7qksbcTBzFs"
-
-# Subnet CIDR replace if it differs& put " ," for other cidr
-SUBNET_CIDR="192.168.0.0/24"
-
-#curl install
-sudo apt update
-sudo apt upgrade
-sudo apt install curl
-
-# Install Tailscale
-curl -fsSL https://tailscale.com/install.sh | sh
+# Install sudo if not already installed
+if ! command -v sudo &>/dev/null; then
+    echo "sudo is not installed. Installing..."
+    apt-get update
+    apt-get install -y sudo
+fi
 
 # Enable IP forwarding and IPv6 forwarding
 echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.conf
@@ -21,11 +14,30 @@ echo 'net.ipv4.conf.all.accept_source_route = 1' | sudo tee -a /etc/sysctl.conf
 echo 'net.ipv6.conf.all.accept_source_route = 1' | sudo tee -a /etc/sysctl.conf
 sudo sysctl -p /etc/sysctl.conf
 
-# Configure iptables for subnet routing
-sudo iptables -t nat -A POSTROUTING -s $SUBNET_CIDR ! -d $SUBNET_CIDR -o tailscale0 -j MASQUERADE
+# Update and install prerequisites (curl)
+sudo apt update
+sudo apt upgrade
+sudo apt install -y curl
+
+# Install Tailscale
+curl -fsSL https://tailscale.com/install.sh | sh
+
+# Prompt for Tailscale authentication key
+read -p "Enter Tailscale authentication key: " AUTH_KEY
+
+# Prompt for first subnet CIDR
+read -p "Enter first subnet CIDR (e.g., 192.168.0.0/24): " SUBNET_CIDR
+
+# Prompt if user wants to add a second subnet
+read -p "Do you want to add a second subnet? (y/n): " ADD_SECOND_SUBNET
+
+if [[ $ADD_SECOND_SUBNET == "y" ]]; then
+    # Prompt for second subnet CIDR
+    read -p "Enter second subnet CIDR (e.g., 10.0.0.0/24): " SECOND_SUBNET_CIDR
+fi
 
 # Start Tailscale as an exit node and subnet router
-sudo tailscale up --auth-key=$AUTH_KEY --accept-routes --advertise-exit-node --advertise-routes=$SUBNET_CIDR &
+sudo tailscale up --auth-key=$AUTH_KEY --accept-routes --advertise-routes=$SUBNET_CIDR,$SECOND_SUBNET_CIDR --advertise-exit-node &
 
 # Display Tailscale status
 sudo tailscale status
