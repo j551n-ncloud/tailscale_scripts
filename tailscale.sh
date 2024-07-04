@@ -21,6 +21,7 @@ sudo apt install -y curl
 
 # Install Tailscale
 curl -fsSL https://tailscale.com/install.sh | sh
+sudo systemctl start tailscaled
 
 # Prompt for Tailscale authentication key
 read -p "Enter Tailscale authentication key: " AUTH_KEY
