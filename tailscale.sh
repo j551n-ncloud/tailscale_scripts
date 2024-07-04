@@ -4,7 +4,7 @@
 setup_environment() {
     echo "=== Setting up environment ==="
 
-    # Install necessary packages (sudo, ethtool)
+    # Install necessary packages (sudo, ethtool, curl)
     if ! command -v sudo &>/dev/null; then
         echo "sudo is not installed. Installing..."
         apt-get update
@@ -14,6 +14,11 @@ setup_environment() {
     if ! command -v ethtool &>/dev/null; then
         echo "ethtool is not installed. Installing..."
         sudo apt-get install -y ethtool
+    fi
+
+    if ! command -v curl &>/dev/null; then
+        echo "curl is not installed. Installing..."
+        sudo apt-get install -y curl
     fi
 
     # Enable IP forwarding and IPv6 forwarding
