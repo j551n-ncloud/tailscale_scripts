@@ -16,7 +16,7 @@ sudo sysctl -p /etc/sysctl.conf
 
 # Update and install prerequisites (curl)
 sudo apt update
-sudo apt upgrade
+sudo apt upgrade -y
 sudo apt install -y curl
 
 # Install Tailscale
@@ -35,10 +35,18 @@ read -p "Do you want to add a second subnet? (y/n): " ADD_SECOND_SUBNET
 if [[ $ADD_SECOND_SUBNET == "y" ]]; then
     # Prompt for second subnet CIDR
     read -p "Enter second subnet CIDR (e.g., 10.0.0.0/24): " SECOND_SUBNET_CIDR
+    
+    if [[ -n "$SECOND_SUBNET_CIDR" ]]; then
+        # Start Tailscale with both subnets
+        sudo tailscale up --auth-key="$AUTH_KEY" --accept-routes --advertise-routes="$SUBNET_CIDR,$SECOND_SUBNET_CIDR" --advertise-exit-node &
+    else
+        echo "Invalid input for second subnet CIDR."
+        exit 1
+    fi
+else
+    # Start Tailscale with only the first subnet
+    sudo tailscale up --auth-key="$AUTH_KEY" --accept-routes --advertise-routes="$SUBNET_CIDR" --advertise-exit-node &
 fi
-
-# Start Tailscale as an exit node and subnet router
-sudo tailscale up --auth-key=$AUTH_KEY --accept-routes --advertise-routes=$SUBNET_CIDR,$SECOND_SUBNET_CIDR --advertise-exit-node &
 
 # Display Tailscale status
 sudo tailscale status
