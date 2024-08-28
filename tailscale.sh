@@ -97,3 +97,4 @@ install_and_configure_tailscale() {
 setup_environment
 configure_network_optimizations
 install_and_configure_tailscale
+exit
