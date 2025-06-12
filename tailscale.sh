@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Tailscale authentication key if key is invalid paste new one in
-AUTH_KEY="tskey-auth-kuNbtx2CNTRL-9svk36a1gM7XHyMfLWzFN7qksbcTBzFs"
+AUTH_KEY=""
 
 # Subnet CIDR replace if it differs& put " ," for other cidr
 SUBNET_CIDR="192.168.0.0/24"
